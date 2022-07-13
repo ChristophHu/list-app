@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Comp, COMPLETE, Item } from 'src/core/models/item.model';
+import { COMPLETE, Item } from 'src/core/models/item.model';
 
 @Injectable()
 export class ItemService {

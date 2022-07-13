@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Query } from '@nestjs/common';
 import { ApiBody, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { Comp, COMPLETE, Item } from 'src/core/models/item.model';
+import { COMPLETE, Item } from 'src/core/models/item.model';
 import { ItemService } from './item.service';
 
 export enum UserRole {

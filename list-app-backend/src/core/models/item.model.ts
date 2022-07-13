@@ -1,4 +1,4 @@
-import { ApiProperty } from "@nestjs/swagger"
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger"
 
 export enum COMPLETE {
     true = 'true',
@@ -6,20 +6,15 @@ export enum COMPLETE {
 }
 
 export class Item {
-    @ApiProperty()
+    @ApiPropertyOptional()
     id      : string
     @ApiProperty()
     id_list : string
     @ApiProperty()
     title   : string
-    @ApiProperty()
+    @ApiPropertyOptional()
     description: string
     // @ApiProperty({ enum: COMPLETE, example: COMPLETE.false, default: COMPLETE.false })
     @ApiProperty({ example: false, default: false })
     complete: COMPLETE
-}
-
-export class Comp {
-    @ApiProperty()
-    complete: boolean
 }
