@@ -5,6 +5,11 @@ import { AppService } from './app.service';
 describe('AppController', () => {
   let appController: AppController;
 
+  describe('Example test', () => {
+    it('equals', () => {
+        expect(true).toEqual(true)
+    })
+  })
   // beforeEach(async () => {
   //   const app: TestingModule = await Test.createTestingModule({
   //     controllers: [AppController],

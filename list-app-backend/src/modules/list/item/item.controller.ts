@@ -1,13 +1,13 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Query } from '@nestjs/common';
-import { ApiBody, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { COMPLETE, Item } from 'src/core/models/item.model';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Query, Req, UseGuards } from '@nestjs/common';
+import { ApiBody, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger'
+import { Item } from '../../../core/models/item.model';
 import { ItemService } from './item.service';
 
-export enum UserRole {
-    Admin = 'Admin',
-    Moderator = 'Moderator',
-    User = 'User',
-}
+// export enum UserRole {
+//     Admin = 'Admin',
+//     Moderator = 'Moderator',
+//     User = 'User',
+// }
 
 @ApiTags('list-item')
 @Controller('item')
@@ -39,9 +39,9 @@ export class ItemController {
 
     @Patch('list/item/:id/complete')
     @ApiParam({name: 'id'})
-    @ApiQuery({ name: 'complete', enum: COMPLETE })
+    @ApiQuery({ name: 'complete', enum: ['true', 'false'] })
     @ApiResponse({ status: 200, description: 'Item updated.'})
-    async updateItemComplete(@Param('id') id: string, @Query('complete') complete: COMPLETE = COMPLETE.false): Promise<void> {
+    async updateItemComplete(@Param('id') id: string, @Query('complete') complete: boolean = false): Promise<void> {
         await this._ItemService.updateItemComplete(id, complete)
     }
 

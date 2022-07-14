@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { COMPLETE, Item } from 'src/core/models/item.model';
+import { Item } from 'src/core/models/item.model';
 
 @Injectable()
 export class ItemService {
     private items: Item[] = [
-        { id: '100', id_list: '1', title: 'first title', description: 'first description', complete: COMPLETE.false }
+        { id: '100', id_list: '1', title: 'first title', description: 'first description', complete: false }
     ]
 
     async getItems() {
@@ -25,7 +25,7 @@ export class ItemService {
         return true
     }
 
-    async updateItemComplete(id: string, complete: COMPLETE): Promise<void> {
+    async updateItemComplete(id: string, complete: boolean): Promise<void> {
         let item = await this.getItemById(id)
         item[0].complete = complete
         this.items = this.items.filter((item: Item) => item.id != id)

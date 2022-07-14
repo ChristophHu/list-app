@@ -1,10 +1,16 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { ItemController } from './item.controller';
-import { ItemService } from './item.service';
+import { Test, TestingModule } from '@nestjs/testing'
+import { ItemController } from './item.controller'
+import { ItemService } from './item.service'
 
 describe('CatsController', () => {
-  let itemController: ItemController;
-  let itemService: ItemService;
+  let controller: ItemController;
+  let service: ItemService;
+
+  describe('Example test', () => {
+    it('equals', () => {
+        expect(true).toEqual(true)
+    })
+  })
 
   beforeEach(async () => {
     const moduleRef = await Test.createTestingModule({
@@ -12,41 +18,25 @@ describe('CatsController', () => {
         providers: [ItemService],
       }).compile();
 
-    itemService = moduleRef.get<ItemService>(ItemService);
-    itemController = moduleRef.get<ItemController>(ItemController);
+    controller = moduleRef.get<ItemController>(ItemController)
+    service = moduleRef.get<ItemService>(ItemService)
   })
 
-  describe('findAll', () => {
-    it('should return an array of cats', async () => {
-      const result = ['test'];
-      jest.spyOn(itemService, 'findAll').mockImplementation(() => result);
-
-      expect(await itemController.findAll()).toBe(result);
-    });
+  it('controller should be defined', () => {
+    expect(controller).toBeDefined()
+  })
+  it('service should be defined', () => {
+    expect(service).toBeDefined()
   })
 
-  // describe('findAll', () => {
-  //   it('should return an array of cats', async () => {
-  //     const result = ['test'];
-  //     jest.spyOn(catsService, 'findAll').mockImplementation(() => result);
-
-  //     expect(await catsController.findAll()).toBe(result);
-  //   });
-  // });
+  describe('getItems', () => {
+    it('should return all the events', async () => {
+      const result = [
+        { id: '100', id_list: '1', title: 'first title', description: 'first description', complete: false }
+      ];
+  
+      const data = await service.getItems()
+      expect(data).toEqual(result)
+    })
+  })
 })
-
-// describe('ItemController', () => {
-//   let controller: ItemController;
-
-//   beforeEach(async () => {
-//     const module: TestingModule = await Test.createTestingModule({
-//       controllers: [ItemController],
-//     }).compile();
-
-//     controller = module.get<ItemController>(ItemController);
-//   });
-
-//   // it('should be defined', () => {
-//   //   expect(controller).toBeDefined();
-//   // });
-// });
