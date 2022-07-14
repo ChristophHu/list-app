@@ -41,6 +41,10 @@ export class AuthService {
     //     return tokens;
     // }
 
+    async whoami(sub: string): Promise<User> {
+       return await this.usersService.findOne(sub)
+    }
+
     async signinLocal(dto: AuthDTO): Promise<Tokens> {
         const user = await this.usersService.findOne(dto.email)
         // const user = await this.prisma.user.findUnique({
