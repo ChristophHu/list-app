@@ -17,7 +17,9 @@ async function bootstrap() {
     .setDescription('Application to list some items to buy.')
     .setVersion('1.0')
     .addTag('List-App')
-    .build();
+    .addBearerAuth({ type: 'http', scheme: 'bearer', bearerFormat: 'JWT', name: 'JWT', description: 'Enter JWT token', in: 'header' }, 'access_token')
+    .build()
+    
   const document = SwaggerModule.createDocument(app, options)
   SwaggerModule.setup('api', app, document)
 

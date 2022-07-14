@@ -1,13 +1,11 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiBody, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Public } from 'src/modules/authentication/decorators/public.decorator';
 import { AuthService } from './auth.service';
 import { GetCurrentUserId } from './decorators/get-current-user-id.decorator';
-import { GetCurrentUser } from './decorators/get-current-user.decorator';
 import { RtGuard } from './guards/rt.guard';
 import { AuthDTO } from './models/auth.models';
-import { JwtPayload } from './models/jwtpayload.type';
 import { RefreshDTO } from './models/refresh.model';
 import { Tokens } from './models/tokens.type';
 
@@ -24,6 +22,7 @@ export class AuthController {
     // }
   
     @Public()
+    // @UseGuards(AuthGuard('local'))
     @Post('signin')
     @ApiResponse({ status: 200, description: 'Signed in.'})
     signinLocal(@Body() dto: AuthDTO): Promise<Tokens> {
@@ -39,8 +38,8 @@ export class AuthController {
     @Public()
     // @UseGuards(RtGuard)
     @Post('refresh')
-    @ApiParam({name: 'userId'})
-    @ApiParam({name: 'refreshToken'})
+    // @ApiParam({name: 'userId'})
+    // @ApiParam({name: 'refreshToken'})
     @ApiResponse({ status: 201, description: 'Tokens refreshed.'})
     refreshTokens(
         @Body() refresh: RefreshDTO
@@ -52,11 +51,17 @@ export class AuthController {
         return this.authService.refreshTokens(refresh.userId, refresh.hashedRt)
     }
 
+    // @UseGuards(LocalAuthGuard)
+    @UseGuards(AuthGuard('jwt'))
     @Get('whoami')
-    @UseGuards(AuthGuard('local'))
-    async create(@Req() request) {
-        // Logger.log(req.user.email);
-        console.log('ll')
+    @ApiBearerAuth()
+    // @ApiResponse({ status: 401, description: 'Unauthorized, access denied.'})
+    // @ApiResponse({ status: 403, description: 'Forbidden, access denied.'})
+    // @UseGuards(AuthGuard('local'))
+    async whoami(@Req() request) {
+        // console.log(request)
+        // return request.user
+        return 'Hello'
     }
 }
 
