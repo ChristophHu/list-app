@@ -51,17 +51,14 @@ export class AuthController {
         return this.authService.refreshTokens(refresh.userId, refresh.hashedRt)
     }
 
-    // @UseGuards(LocalAuthGuard)
     @UseGuards(AuthGuard('jwt'))
     @Get('whoami')
-    @ApiBearerAuth()
+    @ApiBearerAuth('access_token')
     // @ApiResponse({ status: 401, description: 'Unauthorized, access denied.'})
     // @ApiResponse({ status: 403, description: 'Forbidden, access denied.'})
     // @UseGuards(AuthGuard('local'))
-    async whoami(@Req() request) {
-        // console.log(request)
-        // return request.user
-        return 'Hello'
+    async whoami(@Req() request): Promise<any> {
+        return await this.authService.whoami(request.email)
     }
 }
 
