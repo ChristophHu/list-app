@@ -53,7 +53,7 @@ export class AuthController {
     }
 
     @Get('whoami')
-    @UseGuards(AuthGuard())
+    @UseGuards(AuthGuard('local'))
     async create(@Req() request) {
         // Logger.log(req.user.email);
         console.log('ll')
