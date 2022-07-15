@@ -17,6 +17,7 @@ async function bootstrap() {
     .setDescription('Application to list some items to buy.')
     .setVersion('1.0')
     .addTag('List-App')
+    .addBearerAuth({ type: 'http', scheme: 'bearer', bearerFormat: 'JWT', name: 'jwt-refresh', description: 'Enter JWT refresh-token', in: 'header' }, 'refresh_token')
     .addBearerAuth({ type: 'http', scheme: 'bearer', bearerFormat: 'JWT', name: 'JWT', description: 'Enter JWT token', in: 'header' }, 'access_token')
     .build()
     

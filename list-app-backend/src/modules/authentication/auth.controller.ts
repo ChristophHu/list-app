@@ -35,18 +35,16 @@ export class AuthController {
         return this.authService.logout(userId);
     }
   
-    @Public()
+    // @Public()
     // @UseGuards(RtGuard)
+    @UseGuards(AuthGuard('jwt-refresh'))
     @Post('refresh')
+    @ApiBearerAuth('refresh_token')
     // @ApiParam({name: 'userId'})
     // @ApiParam({name: 'refreshToken'})
     @ApiResponse({ status: 201, description: 'Tokens refreshed.'})
     refreshTokens(
         @Body() refresh: RefreshDTO
-        // @Param('userId') userId: string,
-        // @Param('refreshToken') refreshToken: string,
-        // @GetCurrentUserId() userId: string,
-        // @GetCurrentUser('refreshToken') refreshToken: string,
     ): Promise<Tokens> {
         return this.authService.refreshTokens(refresh.userId, refresh.hashedRt)
     }
@@ -54,9 +52,7 @@ export class AuthController {
     @UseGuards(AuthGuard('jwt'))
     @Get('whoami')
     @ApiBearerAuth('access_token')
-    // @ApiResponse({ status: 401, description: 'Unauthorized, access denied.'})
-    // @ApiResponse({ status: 403, description: 'Forbidden, access denied.'})
-    // @UseGuards(AuthGuard('local'))
+    @ApiResponse({ status: 401, description: 'Unauthorized, access denied.'})
     async whoami(@Req() request): Promise<any> {
         return await this.authService.whoami(request.email)
     }

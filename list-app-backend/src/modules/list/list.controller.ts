@@ -1,7 +1,8 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, UseGuards } from '@nestjs/common';
 import { List } from 'src/core/models/list.model';
 import { ListService } from './list.service';
-import { ApiHeader, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger'
+import { ApiBearerAuth, ApiHeader, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger'
+import { AuthGuard } from '@nestjs/passport';
 
 @ApiTags('list')
 // @ApiHeader({
@@ -13,9 +14,12 @@ export class ListController {
 
     constructor( private _ListService: ListService ) {}
 
+    @UseGuards(AuthGuard('jwt'))
     @Get()
+    @ApiBearerAuth('access_token')
     @ApiOperation({ summary: 'all lists', description: 'Get all lists.' })
     @ApiResponse({ status: 200, description: 'Returns all lists.' })
+    @ApiResponse({ status: 401, description: 'Unauthorized'})
     @ApiResponse({ status: 403, description: 'Forbidden'})
     async getLists(): Promise<List[]> {
         return await this._ListService.getLists()

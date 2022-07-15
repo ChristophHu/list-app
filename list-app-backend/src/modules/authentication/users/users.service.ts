@@ -32,9 +32,4 @@ export class UsersService {
             }
         })
     }
-
-    // async getRole(username: string): Promise<String | undefined> {
-    //     const user = this.users.find(user => user.username === username)
-    //     return user.role
-    // }
 }
