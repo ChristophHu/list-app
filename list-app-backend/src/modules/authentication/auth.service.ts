@@ -42,7 +42,7 @@ export class AuthService {
     // }
 
     async whoami(sub: string): Promise<User> {
-       return await this.usersService.findOne(sub)
+       return await this.usersService.findOneById(sub)
     }
 
     async signinLocal(dto: AuthDTO): Promise<Tokens> {
@@ -87,7 +87,10 @@ export class AuthService {
         return true;
     }
 
-    async refreshTokens(userId: string, rt: string): Promise<Tokens> {
+    async refreshTokens(request: any): Promise<Tokens> {
+        const userId = request.user.userId
+        const rt = request.rawHeaders[request.rawHeaders.indexOf('Authorization')+1].slice(7)
+
         const user = await this.usersService.findOneById(userId)
         // const user = await this.prisma.user.findUnique({
             // where: {
