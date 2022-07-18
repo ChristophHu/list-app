@@ -8,6 +8,8 @@ import { RtGuard } from './guards/rt.guard';
 import { AuthDTO } from './models/auth.models';
 import { RefreshDTO } from './models/refresh.model';
 import { Tokens } from './models/tokens.type';
+import { User } from './users/models/user.model';
+import { Headers } from '@nestjs/common'
 
 @ApiTags('auth')
 @Controller('auth')
@@ -40,21 +42,19 @@ export class AuthController {
     @UseGuards(AuthGuard('jwt-refresh'))
     @Post('refresh')
     @ApiBearerAuth('refresh_token')
-    // @ApiParam({name: 'userId'})
-    // @ApiParam({name: 'refreshToken'})
     @ApiResponse({ status: 201, description: 'Tokens refreshed.'})
-    refreshTokens(
-        @Body() refresh: RefreshDTO
-    ): Promise<Tokens> {
-        return this.authService.refreshTokens(refresh.userId, refresh.hashedRt)
+    async refreshTokens(@Req() request): Promise<Tokens> {
+        return this.authService.refreshTokens(request)
     }
 
     @UseGuards(AuthGuard('jwt'))
     @Get('whoami')
     @ApiBearerAuth('access_token')
+    @ApiResponse({ status: 200, description: 'User returned.'})
     @ApiResponse({ status: 401, description: 'Unauthorized, access denied.'})
     async whoami(@Req() request): Promise<any> {
-        return await this.authService.whoami(request.email)
+        const user = await this.authService.whoami(request.user.userId)
+        return user.email
     }
 }
 
