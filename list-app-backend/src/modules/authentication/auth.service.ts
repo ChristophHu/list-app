@@ -16,53 +16,34 @@ export class AuthService {
         private config: ConfigService,
     ) {}
 
-    // async signupLocal(dto: AuthDto): Promise<Tokens> {
-    //     const hash = await argon.hash(dto.password);
+    async signup(dto: AuthDTO): Promise<Tokens> {
+        const user = await this.usersService.findOne(dto.email)
+        if (user) throw new ForbiddenException('Access Denied')
 
-    //     const user = await this.prisma.user
-    //     .create({
-    //         data: {
-    //         email: dto.email,
-    //         hash,
-    //         },
-    //     })
-    //     .catch((error) => {
-    //         if (error instanceof PrismaClientKnownRequestError) {
-    //         if (error.code === 'P2002') {
-    //             throw new ForbiddenException('Credentials incorrect');
-    //         }
-    //         }
-    //         throw error;
-    //     });
+        const newUser = await this.usersService.createOne(dto.email, dto.password)
 
-    //     const tokens = await this.getTokens(user.id, user.email);
-    //     await this.updateRtHash(user.id, tokens.refresh_token);
+        const tokens = await this.getTokens(newUser.userId, newUser.email)
+        await this.usersService.updateRtHash(newUser.userId, tokens.refresh_token)
 
-    //     return tokens;
-    // }
-
-    async whoami(sub: string): Promise<User> {
-       return await this.usersService.findOneById(sub)
+        return tokens
     }
 
-    async signinLocal(dto: AuthDTO): Promise<Tokens> {
+    async signin(dto: AuthDTO): Promise<Tokens> {
         const user = await this.usersService.findOne(dto.email)
-        // const user = await this.prisma.user.findUnique({
-        //     where: {
-        //         email: dto.email,
-        //     },
-        // });
-
         if (!user) throw new ForbiddenException('Access Denied')
 
         const passwordMatches = await this.verify(user, dto)
-        // const passwordMatches = await argon.verify(user.hash, dto.password)
         if (!passwordMatches) throw new ForbiddenException('Access Denied')
 
         const tokens = await this.getTokens(user.userId, user.email)
         await this.usersService.updateRtHash(user.userId, tokens.refresh_token)
 
         return tokens
+    }
+
+    async logout(userId: string): Promise<boolean> {
+        await this.usersService.updateRtHash(userId, null)
+        return true;
     }
 
     async verify(user: User, dto: AuthDTO): Promise<boolean> {
@@ -82,9 +63,8 @@ export class AuthService {
         }
     }
 
-    async logout(userId: string): Promise<boolean> {
-        await this.usersService.updateRtHash(userId, null)
-        return true;
+    async whoami(sub: string): Promise<User> {
+        return await this.usersService.findOneById(sub)
     }
 
     async refreshTokens(request: any): Promise<Tokens> {
@@ -92,18 +72,10 @@ export class AuthService {
         const rt = request.rawHeaders[request.rawHeaders.indexOf('Authorization')+1].slice(7)
 
         const user = await this.usersService.findOneById(userId)
-        // const user = await this.prisma.user.findUnique({
-            // where: {
-            //     id: userId,
-            // },
-        // })
         if (!user || !user.hashedRt) throw new ForbiddenException('Access Denied')
 
         const rtMatches = await this.verifyRt(user, rt)
         if (!rtMatches) throw new ForbiddenException('Access Denied')
-
-        // const rtMatches = await argon.verify(user.hashedRt, rt)
-        // if (!rtMatches) throw new ForbiddenException('Access Denied')
 
         const tokens = await this.getTokens(user.userId, user.email)
         await this.usersService.updateRtHash(user.userId, tokens.refresh_token)

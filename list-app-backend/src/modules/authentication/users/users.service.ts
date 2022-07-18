@@ -1,5 +1,5 @@
-import { Injectable } from '@nestjs/common';
-import { User } from './models/user.model';
+import { Injectable } from '@nestjs/common'
+import { User } from './models/user.model'
 
 @Injectable()
 export class UsersService {
@@ -9,14 +9,14 @@ export class UsersService {
             email: '24',
             password: 'pa',
             hashedRt: ''
-        },
-        {
-            userId: '2',
-            email: '24225131',
-            password: 'password',
-            hashedRt: ''
         }
-    ];
+    ]
+
+    async createOne(email: string, password: string): Promise<User> {
+        const newUser: User = { userId: '3', email, password, hashedRt: '' }
+        this.users.push(newUser)
+        return newUser
+    }
 
     async findOne(email: string): Promise<User> {
         return this.users.find(user => user.email === email)
