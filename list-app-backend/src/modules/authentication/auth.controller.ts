@@ -21,7 +21,7 @@ export class AuthController {
   
     @Public()
     @Post('signin')
-    @ApiResponse({ status: 200, description: 'Signed in.'})
+    @ApiResponse({ status: 201, description: 'Signed in.'})
     async signinLocal(@Body() dto: AuthDTO): Promise<Tokens> {
         return this.authService.signin(dto)
     }
@@ -41,9 +41,9 @@ export class AuthController {
         return this.authService.refreshTokens(request)
     }
 
-    @UseGuards(AuthGuard('jwt'))
+    // @UseGuards(AuthGuard('jwt'))
     @Get('whoami')
-    @ApiBearerAuth('access_token')
+    // @ApiBearerAuth('access_token')
     @ApiResponse({ status: 200, description: 'User returned.'})
     @ApiResponse({ status: 401, description: 'Unauthorized, access denied.'})
     async whoami(@Req() request): Promise<any> {
